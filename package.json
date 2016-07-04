@@ -1,0 +1,30 @@
+{
+  "name": "nodeapn",
+  "version": "1.0.0",
+  "description": "test push notifications using node.js and your profile",
+  "main": "app.js",
+  "private": true,
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/therudite/nodeapn.git"
+  },
+  "author": "Nitesh Agarwal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/therudite/nodeapn/issues"
+  },
+  "homepage": "https://github.com/therudite/nodeapn#readme",
+  "dependencies": {
+    "apn": "^1.7.6",
+    "body-parser": "^1.15.2",
+    "connect-busboy": "0.0.2",
+    "express": "^4.14.0",
+    "jade": "^1.11.0"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1"
+  }
+}

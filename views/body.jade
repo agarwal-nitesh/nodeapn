@@ -1,0 +1,24 @@
+//- body.jade
+//- This file provides the HTML body part.
+
+body
+	table
+		tr
+			td(style= "width:30%;" )
+				img(src="/images/myIcon.png")
+			td
+				h1 Hi there!
+				p Test your push notif with your certificates... Upload key.pem and cert.pem <span class = "blue">node-apn</span>.
+
+
+				form(action="/upload" method="post", enctype="multipart/form-data")
+					input(type="file", name="file")
+					input(type="submit")
+		
+		tr
+			td(style= "width:30%;" )
+				img(src="/images/myIcon.png")
+			td
+				form(action="/sendPush", method="post")
+					input(type="text", name="deviceToken")
+					input(type="submit")
