@@ -68,12 +68,11 @@ app.post('/upload', function(req, res){
 
 app.post('/sendPush', function(req, res){
   var deviceToken = req.body.deviceToken;
-  console.log(deviceToken);
   pushNotif(deviceToken, "Heloo");
+  res.json({success:true, push:"successful"});
 });
 
 var pushNotif = function(deviceToken, message){
-  console.log("pushNotif method called "+deviceToken);
   var options = { cert: './upload/cert.pem', key:  './upload/key.pem'};
   var apnConnection = new apn.Connection(options);
   var myDevice = new apn.Device(deviceToken);
