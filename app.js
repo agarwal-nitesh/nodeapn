@@ -103,16 +103,20 @@ var pushNotif = function(deviceToken, message, callback){
   note.payload = {'messageFrom': 'Nitesh'};
 
   var transmissionError = false;
+  var transmissionErrorCode = -1;
   apnConnection.on("transmissionError", function(err){
     transmissionError = true;
+    transmissionErrorCode = err;
     console.log("error transmissionError : " + err);
-    callback(false, err);
   });
 
   apnConnection.on("disconnected", function(){
     console.log("disconnected");
     if(transmissionError == false){
       callback(true, "successful");
+    }
+    else{
+      callback(false, transmissionErrorCode);
     }
   });
   apnConnection.pushNotification(note, myDevice);
