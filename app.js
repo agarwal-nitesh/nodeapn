@@ -22,6 +22,23 @@ var http = require('http').Server(app);
 var host = 'localhost';
 var port = 8000;
 
+var Errors = {
+    "noErrorsEncountered": 0,
+    "processingError": 1,
+    "missingDeviceToken": 2,
+    "missingTopic": 3,
+    "missingPayload": 4,
+    "invalidTokenSize": 5,
+    "invalidTopicSize": 6,
+    "invalidPayloadSize": 7,
+    "invalidToken": 8,
+    "apnsShutdown": 10,
+    "none": 255,
+    "retryLimitExceeded": 512,
+    "moduleInitialisationFailed": 513,
+    "connectionRetryLimitExceeded": 514, // When a connection is unable to be established. Usually because of a network / SSL error this will be emitted
+    "connectionTerminated": 515
+};
 
 app.get('/', function(req, res){
   res.render('index', {title:'Home'});
@@ -68,11 +85,12 @@ app.post('/upload', function(req, res){
 
 app.post('/sendPush', function(req, res){
   var deviceToken = req.body.deviceToken;
-  pushNotif(deviceToken, "Heloo");
-  res.json({success:true, push:"successful"});
+  pushNotif(deviceToken, "Heloo", function(success, err){
+      res.json({success:success, push:err, "errors":Errors});
+  });
 });
 
-var pushNotif = function(deviceToken, message){
+var pushNotif = function(deviceToken, message, callback){
   var options = { cert: './upload/cert.pem', key:  './upload/key.pem'};
   var apnConnection = new apn.Connection(options);
   var myDevice = new apn.Device(deviceToken);
@@ -84,7 +102,21 @@ var pushNotif = function(deviceToken, message){
   note.alert = "\uD83D\uDCE7 \u2709 You have a new message";
   note.payload = {'messageFrom': 'Nitesh'};
 
+  var transmissionError = false;
+  apnConnection.on("transmissionError", function(err){
+    transmissionError = true;
+    console.log("error transmissionError : " + err);
+    callback(false, err);
+  });
+
+  apnConnection.on("disconnected", function(){
+    console.log("disconnected");
+    if(transmissionError == false){
+      callback(true, "successful");
+    }
+  });
   apnConnection.pushNotification(note, myDevice);
+
 }
 
 http.listen(port, function(){
